@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore'
 import { Button, Spinner } from '../components/ui'
 import { LogoAuth } from '../components/ui/Logo'
 import clsx from 'clsx'
+import { authApi } from '../services/api'
 
 const PLANS = [
   { id:'free', name:'Free',  price:'$0 / month',  perks:'50 trades/mo · CSV import' },
@@ -19,18 +20,24 @@ export default function SignupPage() {
 
   const setF = (k) => (e) => setForm((p) => ({ ...p, [k]: e.target.value }))
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setLoading(true)
-    await new Promise((r) => setTimeout(r, 700))
-    login({
-      name:     `${form.firstName} ${form.lastName}`,
-      email:    form.email,
-      initials: `${form.firstName[0] || 'T'}${form.lastName[0] || 'P'}`.toUpperCase(),
+async function handleSubmit(e) {
+  e.preventDefault()
+  setLoading(true)
+  try {
+    const res = await authApi.signup({
+      firstName: form.firstName,
+      lastName:  form.lastName,
+      email:     form.email,
+      password:  form.password,
       plan,
     })
+    login(res.data.user)
     navigate('/onboarding')
+  } catch (err) {
+    alert(err.response?.data?.error || 'Signup failed.')
   }
+  setLoading(false)
+}
 
   return (
     <div className="min-h-screen bg-[var(--bg-0)] flex items-center justify-center p-4">

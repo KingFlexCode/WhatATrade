@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore'
 import { Panel, Button, SectionLabel } from '../components/ui'
 import { computePnl, computeRR, fmtPnl } from '../utils/helpers'
 import clsx from 'clsx'
+import { tradesApi } from '../services/api'
 
 const TICKERS = [
   ['AAPL','Apple Inc'],['MSFT','Microsoft'],['NVDA','NVIDIA'],['TSLA','Tesla'],
@@ -72,11 +73,34 @@ export default function LogTradePage() {
   const stopDist  = form.stopLoss && form.entry ? Math.abs(+form.entry - +form.stopLoss) : 0
   const suggestQty = stopDist > 0 ? Math.floor(riskAmt / stopDist) : null
 
-  function handleSave() {
-    if (!form.symbol || !form.entry || !form.qty) return alert('Symbol, entry price, and quantity are required.')
-    addTrade({ ...form, qty: +form.qty, entry: +form.entry, exit: +form.exit || null, stopLoss: +form.stopLoss || null, pnl, rr, broker: 'manual' })
-    navigate('/trades')
+  async function handleSave() {
+  if (!form.symbol || !form.qty || !form.entry) {
+    alert('Symbol, quantity and entry price are required.')
+    return
   }
+  try {
+    await tradesApi.create({
+      symbol:     form.symbol.toUpperCase(),
+      direction:  form.direction,
+      quantity:   +form.qty,
+      entry_price: +form.entry,
+      exit_price:  +form.exit || null,
+      stop_loss:   +form.stopLoss || null,
+      commission:  +form.commission || 0,
+      setup:       form.setup,
+      instrument:  form.instrument,
+      emotion:     form.emotion,
+      tags:        form.tags,
+      notes:       form.notes,
+      trade_date:  form.date,
+      broker:      'manual',
+    })
+    navigate('/trades')
+  } catch (err) {
+    console.error('Save trade error:', err)
+    alert('Failed to save trade. Check console for details.')
+  }
+}
 
   return (
     <div>

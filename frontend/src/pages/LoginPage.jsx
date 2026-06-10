@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore'
 import { Button, Spinner } from '../components/ui'
 import { LogoAuth } from '../components/ui/Logo'
+import { authApi } from '../services/api'
 
 export default function LoginPage() {
   const [email,    setEmail]    = useState('')
@@ -12,16 +13,20 @@ export default function LoginPage() {
   const { login } = useStore()
   const navigate  = useNavigate()
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setError('')
-    if (!email || !password) { setError('Please fill in all fields.'); return }
-    setLoading(true)
-    await new Promise((r) => setTimeout(r, 700))
-    setLoading(false)
-    login({ name: 'Jordan Davis', email, initials: 'JD' })
+async function handleSubmit(e) {
+  e.preventDefault()
+  setError('')
+  if (!email || !password) { setError('Please fill in all fields.'); return }
+  setLoading(true)
+  try {
+    const res = await authApi.login(email, password)
+    login(res.data.user)
     navigate('/')
+  } catch (err) {
+    setError(err.response?.data?.error || 'Login failed. Please try again.')
   }
+  setLoading(false)
+}
 
   return (
     <div className="min-h-screen bg-[var(--bg-0)] flex items-center justify-center p-4">
