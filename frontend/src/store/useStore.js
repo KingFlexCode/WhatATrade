@@ -60,7 +60,7 @@ export const useStore = create(
 
       // ── Settings ─────────────────────────────────────────────
       settings: {
-        accountBalance:  10000,
+        accountBalance:  0,
         riskPerTrade:    1,
         dailyLossLimit:  500,
         weeklyDrawdown:  1500,
