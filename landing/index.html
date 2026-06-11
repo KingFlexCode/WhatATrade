@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WhatATrade! — The Trading Journal Built for Serious Traders</title>
+  <meta name="description" content="Track every trade, find your patterns, and get AI coaching. The most beautiful trading journal on the market — starting free."/>
+  <meta property="og:title" content="WhatATrade! — Trading Journal"/>
+  <meta property="og:description" content="AI-powered trading journal. Log trades, find patterns, improve performance. Starting free."/>
+  <meta property="og:type" content="website"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --bg0:#07080c;--bg1:#0d0f18;--bg2:#12151f;--bg3:#191d2b;--bg4:#1f2436;
+      --b1:rgba(255,255,255,.08);--b2:rgba(255,255,255,.14);--b3:rgba(255,255,255,.22);
+      --t0:#eef0ff;--t1:#8b94bb;--t2:#4e5778;
+      --ac:#3b8ee8;--acd:rgba(59,142,232,.12);--acb:rgba(59,142,232,.25);
+      --gr:#20d472;--grd:rgba(32,212,114,.10);--grb:rgba(32,212,114,.22);
+      --rd:#f0556a;--rdd:rgba(240,85,106,.10);--rdb:rgba(240,85,106,.22);
+      --am:#f0b040;--pu:#9b7ffa;--pud:rgba(155,127,250,.12);--pub:rgba(155,127,250,.25);
+    }
+    html{scroll-behavior:smooth;}
+    body{font-family:'Outfit',ui-sans-serif,system-ui;background:var(--bg0);color:var(--t0);line-height:1.6;overflow-x:hidden;}
+    .container{max-width:1080px;margin:0 auto;padding:0 24px;}
+    .mono{font-family:'DM Mono',monospace;}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;height:62px;display:flex;align-items:center;background:rgba(7,8,12,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--b1);transition:border-color .3s;}
+    nav.scrolled{border-bottom-color:var(--b2);}
+    .nav-inner{display:flex;align-items:center;gap:8px;width:100%;max-width:1080px;margin:0 auto;padding:0 24px;}
+    .logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+    .logo-text{font-size:15px;font-weight:600;color:var(--t0);}
+    .logo-text .a{color:var(--ac);font-weight:400;}
+    .logo-text .bang{color:var(--gr);font-weight:700;}
+    .nav-links{display:flex;align-items:center;gap:4px;margin-left:auto;}
+    .nav-a{font-size:13.5px;color:var(--t1);text-decoration:none;padding:6px 12px;border-radius:8px;transition:color .15s;}
+    .nav-a:hover{color:var(--t0);}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 20px;border-radius:10px;font-size:13.5px;font-weight:500;font-family:'Outfit',sans-serif;border:none;cursor:pointer;text-decoration:none;transition:all .15s;}
+    .btn-outline{background:transparent;color:var(--t1);border:1px solid var(--b2);}
+    .btn-outline:hover{background:var(--bg3);color:var(--t0);border-color:var(--b3);}
+    .btn-solid{background:var(--ac);color:#fff;}
+    .btn-solid:hover{background:#2a7ad4;transform:translateY(-1px);}
+    .btn-lg{padding:14px 32px;font-size:15px;font-weight:600;border-radius:12px;}
+    .btn-xl{padding:16px 40px;font-size:16px;font-weight:700;border-radius:14px;}
+
+    /* HERO */
+    .hero{padding:130px 0 70px;text-align:center;position:relative;overflow:hidden;}
+    .hero-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse at center,rgba(59,142,232,.09) 0%,rgba(32,212,114,.04) 40%,transparent 70%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 8px;border-radius:20px;background:var(--bg2);border:1px solid var(--b2);font-size:12.5px;color:var(--t1);margin-bottom:28px;}
+    .hero-eyebrow-dot{width:22px;height:22px;border-radius:50%;background:var(--grd);border:1px solid var(--grb);display:flex;align-items:center;justify-content:center;}
+    .hero-eyebrow-dot::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--gr);animation:blink 1.8s infinite;}
+    @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+    h1{font-size:clamp(40px,6.5vw,72px);font-weight:800;line-height:1.1;letter-spacing:-2px;margin-bottom:22px;}
+    h1 em{font-style:normal;background:linear-gradient(135deg,var(--ac),var(--pu));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hero-sub{font-size:clamp(16px,2vw,19px);color:var(--t1);max-width:560px;margin:0 auto 40px;line-height:1.7;font-weight:400;}
+    .hero-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+    .hero-fine{font-size:12px;color:var(--t2);}
+    .hero-fine span{color:var(--gr);}
+
+    /* SOCIAL PROOF BAR */
+    .proof-bar{margin:52px 0;display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;}
+    .proof-item{padding:16px 32px;text-align:center;border-right:1px solid var(--b1);}
+    .proof-item:last-child{border:none;}
+    .proof-num{font-size:26px;font-weight:700;font-family:'DM Mono',monospace;color:var(--t0);margin-bottom:3px;}
+    .proof-lbl{font-size:11.5px;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;}
+
+    /* BROKER STRIP */
+    .broker-strip{padding:20px 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);overflow:hidden;position:relative;}
+    .broker-strip::before,.broker-strip::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;}
+    .broker-strip::before{left:0;background:linear-gradient(90deg,var(--bg0),transparent);}
+    .broker-strip::after{right:0;background:linear-gradient(-90deg,var(--bg0),transparent);}
+    .broker-track{display:flex;gap:48px;align-items:center;animation:scroll 25s linear infinite;width:max-content;}
+    @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .broker-name{font-size:13px;font-weight:500;color:var(--t2);white-space:nowrap;transition:color .15s;}
+    .broker-name:hover{color:var(--t1);}
+    .broker-strip-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--t2);text-align:center;margin-bottom:14px;}
+
+    /* APP PREVIEW */
+    .preview-section{padding:60px 0 80px;}
+    .preview-frame{background:var(--bg2);border:1px solid var(--b2);border-radius:18px;overflow:hidden;box-shadow:0 60px 140px rgba(0,0,0,.7),0 0 0 1px var(--b1);}
+    .preview-topbar{background:var(--bg1);border-bottom:1px solid var(--b1);padding:11px 16px;display:flex;align-items:center;gap:8px;}
+    .pdot{width:11px;height:11px;border-radius:50%;}
+    .purl{flex:1;background:var(--bg3);border-radius:6px;padding:3px 12px;font-size:11px;color:var(--t2);font-family:'DM Mono',monospace;text-align:center;}
+    .preview-body{display:flex;}
+    .preview-sidebar{width:180px;flex-shrink:0;background:var(--bg1);border-right:1px solid var(--b1);padding:14px 8px;}
+    .psb-logo{display:flex;align-items:center;gap:8px;padding:6px 8px;margin-bottom:12px;}
+    .psb-sec{font-size:8.5px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--t2);padding:8px 8px 3px;}
+    .psb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;font-size:12px;color:var(--t1);margin-bottom:1px;}
+    .psb-item.on{background:var(--acd);color:var(--ac);border:1px solid var(--acb);}
+    .psb-icon{width:15px;height:15px;border-radius:4px;background:currentColor;opacity:.5;flex-shrink:0;}
+    .preview-main{flex:1;padding:16px;overflow:hidden;}
+    .pkpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+    .pkpi{background:var(--bg1);border:1px solid var(--b1);border-radius:9px;padding:10px 12px;}
+    .pkpi-l{font-size:8.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);margin-bottom:4px;}
+    .pkpi-v{font-size:16px;font-weight:600;font-family:'DM Mono',monospace;}
+    .pchart{background:var(--bg1);border:1px solid var(--b1);border-radius:9px;padding:12px;margin-bottom:10px;}
+    .pchart-label{font-size:10px;font-weight:500;color:var(--t0);margin-bottom:8px;}
+    .ptrades{background:var(--bg1);border:1px solid var(--b1);border-radius:9px;overflow:hidden;}
+    .ptrades-head{display:grid;grid-template-columns:60px 52px 60px 1fr 60px 60px;gap:4px;padding:7px 10px;border-bottom:1px solid var(--b1);font-size:8.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);}
+    .ptrade-row{display:grid;grid-template-columns:60px 52px 60px 1fr 60px 60px;gap:4px;padding:8px 10px;border-bottom:1px solid var(--b1);font-size:11px;align-items:center;}
+    .ptrade-row:last-child{border:none;}
+    .ptag{display:inline-flex;padding:1px 6px;border-radius:10px;font-size:9.5px;font-weight:500;}
+    .ptag-l{background:var(--grd);color:var(--gr);border:1px solid var(--grb);}
+    .ptag-s{background:var(--rdd);color:var(--rd);border:1px solid var(--rdb);}
+    .ptag-setup{background:var(--acd);color:var(--ac);border:1px solid var(--acb);}
+
+    /* FEATURES */
+    .features-section{padding:80px 0;}
+    .sec-eyebrow{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--ac);margin-bottom:10px;text-align:center;}
+    .sec-title{font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:-1px;text-align:center;margin-bottom:14px;line-height:1.2;}
+    .sec-sub{font-size:16px;color:var(--t1);text-align:center;max-width:500px;margin:0 auto 56px;line-height:1.7;}
+    .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:18px;overflow:hidden;}
+    .feat-card{background:var(--bg1);padding:28px;transition:background .2s;}
+    .feat-card:hover{background:var(--bg2);}
+    .feat-ic{font-size:26px;margin-bottom:14px;display:block;}
+    .feat-title{font-size:15px;font-weight:600;color:var(--t0);margin-bottom:8px;}
+    .feat-body{font-size:13px;color:var(--t1);line-height:1.65;}
+    .feat-tag{display:inline-flex;margin-top:10px;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;}
+
+    /* FEATURE SHOWCASE — alternating */
+    .showcase{padding:80px 0;}
+    .showcase-item{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-bottom:80px;}
+    .showcase-item:last-child{margin-bottom:0;}
+    .showcase-item.reverse{direction:rtl;}
+    .showcase-item.reverse > *{direction:ltr;}
+    .showcase-eyebrow{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--ac);margin-bottom:10px;}
+    .showcase-title{font-size:clamp(22px,3vw,32px);font-weight:700;letter-spacing:-.5px;margin-bottom:14px;line-height:1.25;}
+    .showcase-body{font-size:14.5px;color:var(--t1);line-height:1.75;margin-bottom:20px;}
+    .showcase-checks{display:flex;flex-direction:column;gap:8px;}
+    .showcase-check{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--t1);}
+    .showcase-check::before{content:'✓';color:var(--gr);font-weight:700;flex-shrink:0;margin-top:1px;}
+    .showcase-visual{background:var(--bg2);border:1px solid var(--b2);border-radius:16px;overflow:hidden;min-height:260px;display:flex;flex-direction:column;}
+    .sv-topbar{background:var(--bg1);border-bottom:1px solid var(--b1);padding:10px 14px;display:flex;align-items:center;gap:6px;}
+    .sv-title{font-size:11.5px;font-weight:500;color:var(--t0);}
+    .sv-body{flex:1;padding:14px;}
+
+    /* AI card */
+    .ai-insight{background:var(--bg3);border:1px solid var(--b1);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start;}
+    .ai-ic{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+    .ai-title{font-size:12px;font-weight:500;color:var(--t0);margin-bottom:2px;}
+    .ai-body{font-size:11px;color:var(--t1);line-height:1.5;}
+    .ai-tag{font-size:9.5px;font-weight:500;padding:1px 7px;border-radius:10px;display:inline-block;margin-top:5px;}
+
+    /* Calendar mini */
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+    .cal-dow{font-size:8.5px;text-transform:uppercase;color:var(--t2);text-align:center;padding-bottom:3px;}
+    .cal-day{border-radius:5px;padding:4px 2px;min-height:38px;display:flex;flex-direction:column;align-items:center;font-size:9.5px;}
+    .cal-day.pos{background:var(--grd);border:1px solid var(--grb);color:var(--gr);}
+    .cal-day.neg{background:var(--rdd);border:1px solid var(--rdb);color:var(--rd);}
+    .cal-day.nil{color:var(--t2);}
+    .cal-pnl{font-size:8px;font-family:'DM Mono',monospace;margin-top:1px;}
+
+    /* Risk gauge */
+    .risk-meter{margin-bottom:12px;}
+    .risk-label{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:5px;}
+    .risk-bar{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;}
+    .risk-fill{height:100%;border-radius:3px;}
+
+    /* PRICING */
+    .pricing-section{padding:80px 0;}
+    .billing-wrap{display:flex;justify-content:center;margin-bottom:42px;}
+    .billing-toggle{display:inline-flex;background:var(--bg2);border:1px solid var(--b1);border-radius:12px;padding:4px;gap:0;}
+    .tog-btn{padding:8px 22px;border-radius:9px;font-size:13px;font-weight:500;font-family:'Outfit',sans-serif;border:none;cursor:pointer;background:transparent;color:var(--t2);transition:all .18s;position:relative;}
+    .tog-btn.on{background:var(--ac);color:#fff;}
+    .yr-badge{position:absolute;top:-11px;right:-6px;background:var(--gr);color:#000;font-size:8.5px;font-weight:700;padding:2px 6px;border-radius:8px;white-space:nowrap;}
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:940px;margin:0 auto;}
+    .pcard{background:var(--bg2);border:1px solid var(--b1);border-radius:18px;padding:26px;display:flex;flex-direction:column;transition:border-color .2s,transform .2s;}
+    .pcard:hover{border-color:var(--b2);transform:translateY(-3px);}
+    .pcard.featured{border-color:var(--acb);background:linear-gradient(160deg,var(--bg2),rgba(59,142,232,.07));}
+    .pcard.elite{border-color:var(--pub);background:linear-gradient(160deg,var(--bg2),rgba(155,127,250,.06));}
+    .pbadge{display:inline-block;font-size:9.5px;font-weight:600;padding:2px 9px;border-radius:10px;margin-bottom:12px;}
+    .pbadge.pro{background:var(--acd);color:var(--ac);border:1px solid var(--acb);}
+    .pbadge.elite{background:var(--pud);color:var(--pu);border:1px solid var(--pub);}
+    .pname{font-size:16px;font-weight:600;margin-bottom:6px;}
+    .pprice{font-size:38px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;margin-bottom:2px;}
+    .pprice span{font-size:14px;font-weight:400;color:var(--t2);}
+    .pyr{font-size:11px;color:var(--gr);margin-bottom:4px;min-height:16px;}
+    .pdesc{font-size:12px;color:var(--t2);padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--b1);}
+    .pfeats{list-style:none;display:flex;flex-direction:column;gap:8px;flex:1;margin-bottom:20px;}
+    .pfeats li{font-size:12.5px;color:var(--t1);display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+    .pfeats li::before{content:'✓';color:var(--gr);font-weight:700;flex-shrink:0;margin-top:1px;}
+    .pfeats li.no{color:var(--t2);}
+    .pfeats li.no::before{content:'—';color:var(--t2);font-weight:400;}
+    .pfeats li.hot{color:var(--t0);font-weight:500;}
+    .pfeats li.hot::before{color:var(--pu);}
+    .pguarantee{text-align:center;font-size:12.5px;color:var(--t2);margin-top:24px;display:flex;align-items:center;justify-content:center;gap:7px;}
+
+    /* TESTIMONIALS */
+    .testimonials-section{padding:80px 0;}
+    .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+    .tcard{background:var(--bg2);border:1px solid var(--b1);border-radius:16px;padding:22px;transition:border-color .2s;}
+    .tcard:hover{border-color:var(--b2);}
+    .tcard-stars{color:var(--am);font-size:13px;margin-bottom:12px;}
+    .tcard-text{font-size:13.5px;color:var(--t1);line-height:1.65;margin-bottom:16px;font-style:italic;}
+    .tcard-author{display:flex;align-items:center;gap:10px;}
+    .tcard-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0;}
+    .tcard-name{font-size:13px;font-weight:500;color:var(--t0);}
+    .tcard-title{font-size:11.5px;color:var(--t2);}
+
+    /* CTA SECTION */
+    .cta-section{padding:80px 0;}
+    .cta-card{background:linear-gradient(135deg,var(--bg2),var(--bg1));border:1px solid var(--b2);border-radius:24px;padding:60px 40px;text-align:center;position:relative;overflow:hidden;max-width:740px;margin:0 auto;}
+    .cta-glow{position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse,rgba(59,142,232,.09) 0%,transparent 70%);pointer-events:none;}
+    .cta-title{font-size:clamp(26px,4vw,40px);font-weight:700;letter-spacing:-.8px;margin-bottom:12px;}
+    .cta-sub{font-size:15px;color:var(--t1);margin-bottom:32px;line-height:1.65;}
+    .cta-form{display:flex;gap:10px;max-width:440px;margin:0 auto 12px;}
+    .cta-input{flex:1;padding:13px 16px;border-radius:11px;border:1px solid var(--b2);background:var(--bg3);color:var(--t0);font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border .15s;}
+    .cta-input:focus{border-color:var(--ac);}
+    .cta-input::placeholder{color:var(--t2);}
+    .cta-note{font-size:11.5px;color:var(--t2);}
+    .cta-note a{color:var(--ac);text-decoration:none;}
+    .success{display:none;margin-top:12px;padding:11px 18px;border-radius:10px;background:var(--grd);border:1px solid var(--grb);color:var(--gr);font-size:13.5px;}
+    .success.show{display:block;}
+
+    /* FOOTER */
+    footer{border-top:1px solid var(--b1);padding:32px 0;}
+    .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+    .footer-brand{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--t2);}
+    .footer-links{display:flex;gap:22px;}
+    .footer-links a{font-size:13px;color:var(--t2);text-decoration:none;transition:color .15s;}
+    .footer-links a:hover{color:var(--t0);}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .showcase-item,.showcase-item.reverse{grid-template-columns:1fr;direction:ltr;gap:32px;}
+      .feat-grid{grid-template-columns:1fr 1fr;}
+      .pricing-grid,.testi-grid{grid-template-columns:1fr;}
+      .preview-sidebar{display:none;}
+      .pkpi-row{grid-template-columns:1fr 1fr;}
+    }
+    @media(max-width:600px){
+      .feat-grid{grid-template-columns:1fr;}
+      .nav-links .nav-a{display:none;}
+      .proof-item{padding:12px 20px;}
+      .cta-form{flex-direction:column;}
+      .hero-actions{flex-direction:column;align-items:center;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="7" fill="#0d0f18"/>
+        <polyline points="3,19 7,19 9.5,12.5 12,23 14,7.5 16,19 20,19 22,14.5 24,16.5 27,16.5"
+          stroke="#3b8ee8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="27" cy="16.5" r="2" fill="#20d472"/>
+      </svg>
+      <span class="logo-text">What<span class="a">A</span>Trade<span class="bang">!</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#features"  class="nav-a">Features</a>
+      <a href="#pricing"   class="nav-a">Pricing</a>
+      <a href="#waitlist"  class="nav-a">Early access</a>
+      <a href="https://whatatrade.netlify.app/login"  class="btn btn-outline" style="padding:7px 14px;font-size:13px;">Sign in</a>
+      <a href="https://whatatrade.netlify.app/signup" class="btn btn-solid"   style="padding:7px 16px;font-size:13px;">Start free →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-dot"></div>
+      Now live — join traders already improving their performance
+    </div>
+    <h1>The journal that turns<br/><em>every trade into progress</em></h1>
+    <p class="hero-sub">
+      Log trades, find your patterns, and get an AI coach that actually knows your data —
+      all in the most beautiful trading journal you've ever used.
+    </p>
+    <div class="hero-actions">
+      <a href="https://whatatrade.netlify.app/signup" class="btn btn-solid btn-xl">
+        Start for free →
+      </a>
+      <a href="#features" class="btn btn-outline btn-lg">
+        See how it works
+      </a>
+    </div>
+    <p class="hero-fine">Free plan available · No credit card · <span>Pro from $14/month</span></p>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<div class="container">
+  <div class="proof-bar">
+    <div class="proof-item"><div class="proof-num">$0</div><div class="proof-lbl">to start</div></div>
+    <div class="proof-item"><div class="proof-num">$14</div><div class="proof-lbl">Pro / month</div></div>
+    <div class="proof-item"><div class="proof-num">AI</div><div class="proof-lbl">Coach included</div></div>
+    <div class="proof-item"><div class="proof-num">3</div><div class="proof-lbl">Tiers to grow with</div></div>
+  </div>
+</div>
+
+<!-- BROKER STRIP -->
+<div class="broker-strip">
+  <div class="container" style="margin-bottom:12px;">
+    <div class="broker-strip-label">Connects with your broker</div>
+  </div>
+  <div class="broker-track">
+    <span class="broker-name">thinkorswim</span>
+    <span class="broker-name">Webull</span>
+    <span class="broker-name">Robinhood</span>
+    <span class="broker-name">SoFi Invest</span>
+    <span class="broker-name">Interactive Brokers</span>
+    <span class="broker-name">TD Ameritrade</span>
+    <span class="broker-name">TradeStation</span>
+    <span class="broker-name">NinjaTrader</span>
+    <span class="broker-name">Tradovate</span>
+    <span class="broker-name">MetaTrader 4</span>
+    <span class="broker-name">MetaTrader 5</span>
+    <span class="broker-name">FTMO</span>
+    <span class="broker-name">TopStep</span>
+    <span class="broker-name">Apex Trader</span>
+    <!-- duplicate for seamless loop -->
+    <span class="broker-name">thinkorswim</span>
+    <span class="broker-name">Webull</span>
+    <span class="broker-name">Robinhood</span>
+    <span class="broker-name">SoFi Invest</span>
+    <span class="broker-name">Interactive Brokers</span>
+    <span class="broker-name">TD Ameritrade</span>
+    <span class="broker-name">TradeStation</span>
+    <span class="broker-name">NinjaTrader</span>
+    <span class="broker-name">Tradovate</span>
+    <span class="broker-name">MetaTrader 4</span>
+    <span class="broker-name">MetaTrader 5</span>
+    <span class="broker-name">FTMO</span>
+    <span class="broker-name">TopStep</span>
+    <span class="broker-name">Apex Trader</span>
+  </div>
+</div>
+
+<!-- APP PREVIEW -->
+<section class="preview-section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div class="sec-eyebrow">The app</div>
+      <h2 class="sec-title" style="margin-bottom:0;">Built for traders who <em style="font-style:normal;color:var(--ac);">care about design</em></h2>
+    </div>
+    <div class="preview-frame">
+      <div class="preview-topbar">
+        <div class="pdot" style="background:#f0556a;"></div>
+        <div class="pdot" style="background:#f0b040;"></div>
+        <div class="pdot" style="background:#20d472;"></div>
+        <div class="purl">whatatrade.netlify.app/dashboard</div>
+      </div>
+      <div class="preview-body">
+        <!-- Sidebar -->
+        <div class="preview-sidebar">
+          <div class="psb-logo">
+            <svg width="20" height="20" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#0d0f18"/><polyline points="3,19 7,19 9.5,12.5 12,23 14,7.5 16,19 20,19 22,14.5 24,16.5 27,16.5" stroke="#3b8ee8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="16.5" r="2" fill="#20d472"/></svg>
+            <span style="font-size:11.5px;font-weight:600;color:var(--t0);">WhatATrade<span style="color:#20d472;">!</span></span>
+          </div>
+          <div class="psb-sec">Overview</div>
+          <div class="psb-item on"><div class="psb-icon"></div>Dashboard</div>
+          <div class="psb-item"><div class="psb-icon"></div>Trade log</div>
+          <div class="psb-item"><div class="psb-icon"></div>Calendar</div>
+          <div class="psb-sec">Analyse</div>
+          <div class="psb-item"><div class="psb-icon"></div>Analytics</div>
+          <div class="psb-item"><div class="psb-icon"></div>Risk mgmt</div>
+          <div class="psb-item"><div class="psb-icon"></div>AI insights</div>
+          <div class="psb-sec">Strategy</div>
+          <div class="psb-item"><div class="psb-icon"></div>Playbooks</div>
+        </div>
+        <!-- Main -->
+        <div class="preview-main">
+          <div class="pkpi-row">
+            <div class="pkpi"><div class="pkpi-l">Net P&L</div><div class="pkpi-v" style="color:#20d472;">+$4,830</div></div>
+            <div class="pkpi"><div class="pkpi-l">Win rate</div><div class="pkpi-v">63.2%</div></div>
+            <div class="pkpi"><div class="pkpi-l">Profit factor</div><div class="pkpi-v">2.14</div></div>
+            <div class="pkpi"><div class="pkpi-l">Streak</div><div class="pkpi-v" style="color:#f0b040;">W4 🔥</div></div>
+          </div>
+          <div class="pchart">
+            <div class="pchart-label">Equity curve</div>
+            <svg viewBox="0 0 480 55" width="100%" height="55" preserveAspectRatio="none">
+              <defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b8ee8" stop-opacity=".2"/><stop offset="100%" stop-color="#3b8ee8" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0,50 C40,46 80,42 130,36 C170,31 200,34 240,27 C280,20 310,23 350,15 C390,7 420,11 460,4 L460,55 L0,55Z" fill="url(#eg)"/>
+              <path d="M0,50 C40,46 80,42 130,36 C170,31 200,34 240,27 C280,20 310,23 350,15 C390,7 420,11 460,4" fill="none" stroke="#3b8ee8" stroke-width="2.2" stroke-linecap="round"/>
+              <circle cx="460" cy="4" r="4" fill="#20d472"/>
+            </svg>
+          </div>
+          <div class="ptrades">
+            <div class="ptrades-head"><span>Date</span><span>Symbol</span><span>Side</span><span>Setup</span><span>P&L</span><span>R:R</span></div>
+            <div class="ptrade-row">
+              <span style="color:var(--t2);">May 19</span>
+              <span style="font-weight:600;">AAPL</span>
+              <span><span class="ptag ptag-l">Long</span></span>
+              <span><span class="ptag ptag-setup">Breakout</span></span>
+              <span style="color:var(--gr);font-family:'DM Mono',monospace;">+$740</span>
+              <span style="color:var(--gr);font-family:'DM Mono',monospace;">+2.1R</span>
+            </div>
+            <div class="ptrade-row">
+              <span style="color:var(--t2);">May 18</span>
+              <span style="font-weight:600;">NVDA</span>
+              <span><span class="ptag ptag-s">Short</span></span>
+              <span><span class="ptag ptag-setup">Mean rev.</span></span>
+              <span style="color:var(--gr);font-family:'DM Mono',monospace;">+$825</span>
+              <span style="color:var(--gr);font-family:'DM Mono',monospace;">+3.2R</span>
+            </div>
+            <div class="ptrade-row">
+              <span style="color:var(--t2);">May 17</span>
+              <span style="font-weight:600;">SPY</span>
+              <span><span class="ptag ptag-l">Long</span></span>
+              <span><span class="ptag ptag-setup">VWAP</span></span>
+              <span style="color:var(--rd);font-family:'DM Mono',monospace;">-$170</span>
+              <span style="color:var(--rd);font-family:'DM Mono',monospace;">-0.8R</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES GRID -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="sec-eyebrow">Everything you need</div>
+    <h2 class="sec-title">One app. Every tool.</h2>
+    <p class="sec-sub">Everything a serious trader needs to track performance and get better — all in one place.</p>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <span class="feat-ic">📓</span>
+        <div class="feat-title">Trade Journal</div>
+        <div class="feat-body">Log every trade in seconds. Track entry, exit, setup, emotion, and notes. See your full history in a clean, filterable table.</div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-ic">🤖</span>
+        <div class="feat-title">AI Trade Coach</div>
+        <div class="feat-body">Your AI coach reads your trade history and tells you exactly what's costing you money — patterns in setups, emotions, and timing.</div>
+        <span class="feat-tag" style="background:var(--acd);color:var(--ac);border:1px solid var(--acb);">Pro+</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-ic">📊</span>
+        <div class="feat-title">Deep Analytics</div>
+        <div class="feat-body">Win rate by setup, P&L by day of week, emotion analysis, instrument breakdown. Find exactly where you make and lose money.</div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-ic">🔁</span>
+        <div class="feat-title">Trade Replay</div>
+        <div class="feat-body">Re-watch any trade bar by bar. Spot the hesitation, the early exit, the level you should have respected. Fix it next time.</div>
+        <span class="feat-tag" style="background:var(--pud);color:var(--pu);border:1px solid var(--pub);">Elite ✦</span>
+      </div>
+      <div class="feat-card">
+        <span class="feat-ic">🛡️</span>
+        <div class="feat-title">Risk Management</div>
+        <div class="feat-body">Daily loss limits, weekly drawdown tracking, and a position sizer that calculates your exact share size based on your risk tolerance.</div>
+      </div>
+      <div class="feat-card">
+        <span class="feat-ic">📅</span>
+        <div class="feat-title">Trading Calendar</div>
+        <div class="feat-body">See your P&L mapped to every day of the month. Spot your best and worst days instantly. Know when to trade and when to step away.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE SHOWCASE -->
+<section class="showcase">
+  <div class="container">
+
+    <!-- AI Coach -->
+    <div class="showcase-item">
+      <div>
+        <div class="showcase-eyebrow">AI Trade Coach</div>
+        <h3 class="showcase-title">Your personal coach,<br/>built into the journal</h3>
+        <p class="showcase-body">Our AI reads every trade you've ever made and finds the patterns you can't see yourself. Not generic tips — specific insights from your actual data.</p>
+        <div class="showcase-checks">
+          <div class="showcase-check">Finds your best and worst setups automatically</div>
+          <div class="showcase-check">Detects emotion-driven losses before they become habits</div>
+          <div class="showcase-check">Tells you which days and times you trade best</div>
+          <div class="showcase-check">Gets smarter the more you trade</div>
+        </div>
+      </div>
+      <div class="showcase-visual">
+        <div class="sv-topbar"><div class="sv-title">AI insights</div><span style="font-size:9.5px;background:var(--acd);color:var(--ac);padding:2px 8px;border-radius:10px;border:1px solid var(--acb);">Powered by AI</span></div>
+        <div class="sv-body">
+          <div class="ai-insight">
+            <div class="ai-ic" style="background:var(--grd);border:1px solid var(--grb);">📈</div>
+            <div>
+              <div class="ai-title">Breakout trades are your edge</div>
+              <div class="ai-body">71% win rate, 2.3R average — well above your other setups. Consider increasing size when daily P&L is positive.</div>
+              <span class="ai-tag" style="background:var(--grd);color:var(--gr);border:1px solid var(--grb);">positive pattern</span>
+            </div>
+          </div>
+          <div class="ai-insight">
+            <div class="ai-ic" style="background:var(--rdd);border:1px solid var(--rdb);">⏰</div>
+            <div>
+              <div class="ai-title">Avoid trading 12–1pm</div>
+              <div class="ai-body">You've lost $340 net during this window over 30 days. Step away during lunch hour consistently.</div>
+              <span class="ai-tag" style="background:var(--rdd);color:var(--rd);border:1px solid var(--rdb);">negative pattern</span>
+            </div>
+          </div>
+          <div class="ai-insight">
+            <div class="ai-ic" style="background:rgba(240,176,64,.12);border:1px solid rgba(240,176,64,.22);">⚠️</div>
+            <div>
+              <div class="ai-title">FOMO trades cost $1,200/month</div>
+              <div class="ai-body">31% win rate on FOMO-tagged trades. A 5-minute pause rule before entry could save you significantly.</div>
+              <span class="ai-tag" style="background:rgba(240,176,64,.12);color:var(--am);border:1px solid rgba(240,176,64,.22);">risk warning</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="showcase-item reverse">
+      <div>
+        <div class="showcase-eyebrow">Trading Calendar</div>
+        <h3 class="showcase-title">See your performance<br/>mapped to every day</h3>
+        <p class="showcase-body">The calendar view shows your P&L for every trading day at a glance. Green days, red days, your best week of the month — all instantly visible.</p>
+        <div class="showcase-checks">
+          <div class="showcase-check">Daily P&L shown on every calendar square</div>
+          <div class="showcase-check">Monthly stats — win day rate, best and worst day</div>
+          <div class="showcase-check">Navigate between months with one click</div>
+          <div class="showcase-check">Spot weekly patterns and overtrading instantly</div>
+        </div>
+      </div>
+      <div class="showcase-visual">
+        <div class="sv-topbar"><div class="sv-title">May 2025</div><span style="font-size:10px;color:var(--gr);font-family:'DM Mono',monospace;">+$4,830 net</span></div>
+        <div class="sv-body">
+          <div class="cal-grid" style="margin-bottom:4px;">
+            <div class="cal-dow">M</div><div class="cal-dow">T</div><div class="cal-dow">W</div>
+            <div class="cal-dow">T</div><div class="cal-dow">F</div><div class="cal-dow">S</div><div class="cal-dow">S</div>
+          </div>
+          <div class="cal-grid">
+            <div></div><div></div><div></div>
+            <div class="cal-day pos"><span>1</span><span class="cal-pnl">+$320</span></div>
+            <div class="cal-day nil"><span style="opacity:.4">2</span></div>
+            <div class="cal-day nil"><span style="opacity:.3">3</span></div>
+            <div class="cal-day nil"><span style="opacity:.3">4</span></div>
+            <div class="cal-day pos"><span>5</span><span class="cal-pnl">+$555</span></div>
+            <div class="cal-day nil"><span style="opacity:.4">6</span></div>
+            <div class="cal-day neg"><span>7</span><span class="cal-pnl">-$285</span></div>
+            <div class="cal-day nil"><span style="opacity:.4">8</span></div>
+            <div class="cal-day pos"><span>9</span><span class="cal-pnl">+$450</span></div>
+            <div class="cal-day nil"><span style="opacity:.3">10</span></div>
+            <div class="cal-day nil"><span style="opacity:.3">11</span></div>
+            <div class="cal-day pos"><span>12</span><span class="cal-pnl">+$825</span></div>
+            <div class="cal-day pos"><span>13</span><span class="cal-pnl">+$740</span></div>
+            <div class="cal-day neg"><span>14</span><span class="cal-pnl">-$170</span></div>
+            <div class="cal-day pos"><span>15</span><span class="cal-pnl">+$344</span></div>
+            <div class="cal-day pos"><span>16</span><span class="cal-pnl">+$280</span></div>
+            <div class="cal-day neg"><span>17</span><span class="cal-pnl">-$120</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk -->
+    <div class="showcase-item">
+      <div>
+        <div class="showcase-eyebrow">Risk Management</div>
+        <h3 class="showcase-title">Know your limits.<br/>Trade within them.</h3>
+        <p class="showcase-body">Set your daily loss limit, weekly drawdown, and max trades per day. Get warned before you blow past them. Use the position sizer to calculate the right size every time.</p>
+        <div class="showcase-checks">
+          <div class="showcase-check">Live daily P&L tracked against your limit</div>
+          <div class="showcase-check">Weekly drawdown progress bar</div>
+          <div class="showcase-check">Position sizer — enter price + stop, get share count</div>
+          <div class="showcase-check">Red alert when you're approaching limits</div>
+        </div>
+      </div>
+      <div class="showcase-visual">
+        <div class="sv-topbar"><div class="sv-title">Risk management</div></div>
+        <div class="sv-body">
+          <div class="risk-meter">
+            <div class="risk-label">
+              <span style="font-size:11.5px;color:var(--t1);">Daily loss limit</span>
+              <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--gr);">15% used</span>
+            </div>
+            <div class="risk-bar"><div class="risk-fill" style="width:15%;background:var(--gr);"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t2);margin-top:3px;"><span>Today: +$740</span><span>Limit: -$500</span></div>
+          </div>
+          <div class="risk-meter">
+            <div class="risk-label">
+              <span style="font-size:11.5px;color:var(--t1);">Weekly drawdown</span>
+              <span style="font-size:11px;font-family:'DM Mono',monospace;color:var(--am);">28% used</span>
+            </div>
+            <div class="risk-bar"><div class="risk-fill" style="width:28%;background:var(--am);"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t2);margin-top:3px;"><span>This week: -$420</span><span>Limit: -$1,500</span></div>
+          </div>
+          <div style="background:var(--bg3);border:1px solid var(--b1);border-radius:9px;padding:12px;margin-top:8px;">
+            <div style="font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:8px;">Position sizer</div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:11.5px;">
+              <span style="color:var(--t2);">Max risk (1%)</span>
+              <span style="font-family:'DM Mono',monospace;color:var(--rd);">$482</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:11.5px;">
+              <span style="color:var(--t2);">Suggested shares</span>
+              <span style="font-family:'DM Mono',monospace;color:var(--t0);">193</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11.5px;">
+              <span style="color:var(--t2);">Position size</span>
+              <span style="font-family:'DM Mono',monospace;color:var(--ac);">$35,705</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="sec-eyebrow">Pricing</div>
+    <h2 class="sec-title">Start free. <span style="color:var(--ac);">Grow when ready.</span></h2>
+    <p class="sec-sub" style="margin-bottom:36px;">No contracts. No surprise fees. Cancel anytime.</p>
+
+    <div class="billing-wrap">
+      <div class="billing-toggle">
+        <button class="tog-btn on" id="btn-mo" onclick="setBilling('mo')">Monthly</button>
+        <button class="tog-btn"    id="btn-yr" onclick="setBilling('yr')" style="position:relative;">
+          Yearly<span class="yr-badge">Save 30%</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- FREE -->
+      <div class="pcard">
+        <div class="pname">Free</div>
+        <div class="pprice">$0<span> / mo</span></div>
+        <div class="pyr">&nbsp;</div>
+        <div class="pdesc">Perfect for getting started. No credit card needed.</div>
+        <ul class="pfeats">
+          <li>20 trades per week</li>
+          <li>Trade journal + calendar</li>
+          <li>Basic analytics</li>
+          <li>CSV import</li>
+          <li>30 days trade history</li>
+          <li class="no">AI trade coach</li>
+          <li class="no">Playbooks</li>
+          <li class="no">Broker auto-sync</li>
+          <li class="no">Trade replay</li>
+        </ul>
+        <a href="https://whatatrade.netlify.app/signup" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:auto;">
+          Get started free
+        </a>
+      </div>
+
+      <!-- PRO -->
+      <div class="pcard featured">
+        <div class="pbadge pro">Most popular</div>
+        <div class="pname">Pro</div>
+        <div class="pprice" id="pro-price">$14<span> / mo</span></div>
+        <div class="pyr" id="pro-yr">&nbsp;</div>
+        <div class="pdesc">Everything a serious trader needs.</div>
+        <ul class="pfeats">
+          <li class="hot">Unlimited trades</li>
+          <li>Everything in Free</li>
+          <li>AI coach — 10 analyses/mo</li>
+          <li>5 playbooks</li>
+          <li>Full analytics suite</li>
+          <li>2 broker auto-sync</li>
+          <li>1 year trade history</li>
+          <li>Risk management tools</li>
+          <li class="no">Trade replay</li>
+        </ul>
+        <a href="https://whatatrade.netlify.app/signup" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:auto;" id="pro-btn">
+          Start Pro — $14/mo →
+        </a>
+      </div>
+
+      <!-- ELITE -->
+      <div class="pcard elite">
+        <div class="pbadge elite">Best value</div>
+        <div class="pname">Elite</div>
+        <div class="pprice" id="elite-price">$29<span> / mo</span></div>
+        <div class="pyr" id="elite-yr">&nbsp;</div>
+        <div class="pdesc">For traders who want every possible edge.</div>
+        <ul class="pfeats">
+          <li class="hot">Everything in Pro</li>
+          <li>Unlimited AI analyses</li>
+          <li>Unlimited playbooks</li>
+          <li>All broker auto-sync</li>
+          <li>Unlimited trade history</li>
+          <li class="hot">Trade replay ✦</li>
+          <li>Early feature access</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="https://whatatrade.netlify.app/signup" class="btn btn-solid" style="width:100%;justify-content:center;margin-top:auto;background:var(--pu);" id="elite-btn">
+          Start Elite — $29/mo →
+        </a>
+      </div>
+    </div>
+
+    <div class="pguarantee">
+      🔒 7-day money back guarantee · Cancel anytime · No questions asked
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="sec-eyebrow">Traders love it</div>
+    <h2 class="sec-title">Real traders. Real results.</h2>
+    <p class="sec-sub" style="margin-bottom:44px;">See what traders are saying about WhatATrade!</p>
+    <div class="testi-grid">
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <div class="tcard-text">"Finally a journal that doesn't look like it was built in 2012. The AI insights caught a pattern in my FOMO trades that I'd been blind to for months. Up 18% since fixing it."</div>
+        <div class="tcard-author">
+          <div class="tcard-av" style="background:linear-gradient(135deg,#3b8ee8,#9b7ffa);">MR</div>
+          <div>
+            <div class="tcard-name">Marcus R.</div>
+            <div class="tcard-title">Active retail trader · 3 years</div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <div class="tcard-text">"I was using a spreadsheet before. WhatATrade! replaced everything — the journal, the analytics, even the position sizer I used to calculate manually. Game changer for beginners."</div>
+        <div class="tcard-author">
+          <div class="tcard-av" style="background:linear-gradient(135deg,#20d472,#3b8ee8);">JT</div>
+          <div>
+            <div class="tcard-name">Jamie T.</div>
+            <div class="tcard-title">Beginner trader · 8 months</div>
+          </div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="tcard-stars">★★★★★</div>
+        <div class="tcard-text">"The calendar view alone is worth it. I can see at a glance that I consistently lose on Fridays and shouldn't be trading after 2pm. That alone saved me more than the subscription costs."</div>
+        <div class="tcard-author">
+          <div class="tcard-av" style="background:linear-gradient(135deg,#f0b040,#f0556a);">AL</div>
+          <div>
+            <div class="tcard-name">Alex L.</div>
+            <div class="tcard-title">Day trader · futures</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / WAITLIST -->
+<section class="cta-section" id="waitlist">
+  <div class="container">
+    <div class="cta-card">
+      <div class="cta-glow"></div>
+      <div style="font-size:36px;margin-bottom:14px;">🚀</div>
+      <h2 class="cta-title">Ready to trade smarter?</h2>
+      <p class="cta-sub">
+        Join the waitlist for early access, founding member pricing,<br/>
+        and updates as we build new features.
+      </p>
+      <form class="cta-form" onsubmit="handleSignup(event)">
+        <input type="email" id="cta-email" class="cta-input" placeholder="your@email.com" required/>
+        <button type="submit" class="btn btn-solid btn-lg" style="white-space:nowrap;flex-shrink:0;">
+          Join waitlist →
+        </button>
+      </form>
+      <div class="cta-note">
+        Already have an account? <a href="https://whatatrade.netlify.app/login">Sign in →</a>
+      </div>
+      <div class="success" id="cta-success">
+        🎉 You're on the list! We'll be in touch with early access details.
+      </div>
+      <div style="margin-top:24px;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;">
+        <a href="https://whatatrade.netlify.app/signup" class="btn btn-solid btn-lg">
+          Start free now →
+        </a>
+        <span style="font-size:12px;color:var(--t2);">No credit card required</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="7" fill="#0d0f18"/><polyline points="3,19 7,19 9.5,12.5 12,23 14,7.5 16,19 20,19 22,14.5 24,16.5 27,16.5" stroke="#3b8ee8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="27" cy="16.5" r="2" fill="#20d472"/></svg>
+        © 2025 WhatATrade! — Log the trades worth talking about.
+      </div>
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://whatatrade.netlify.app/login">Sign in</a>
+        <a href="https://whatatrade.netlify.app/signup">Sign up</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20)
+  })
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'))
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+    })
+  })
+
+  // Billing toggle
+  function setBilling(type) {
+    const mo = type === 'mo'
+    document.getElementById('btn-mo').classList.toggle('on', mo)
+    document.getElementById('btn-yr').classList.toggle('on', !mo)
+
+    if (mo) {
+      document.getElementById('pro-price').innerHTML   = '$14<span> / mo</span>'
+      document.getElementById('pro-yr').innerHTML      = '&nbsp;'
+      document.getElementById('pro-btn').textContent   = 'Start Pro — $14/mo →'
+      document.getElementById('elite-price').innerHTML = '$29<span> / mo</span>'
+      document.getElementById('elite-yr').innerHTML    = '&nbsp;'
+      document.getElementById('elite-btn').textContent = 'Start Elite — $29/mo →'
+    } else {
+      document.getElementById('pro-price').innerHTML   = '$9<span> / mo</span>'
+      document.getElementById('pro-yr').innerHTML      = '<span style="color:var(--gr)">Billed $118/yr — save $50</span>'
+      document.getElementById('pro-btn').textContent   = 'Start Pro — $118/yr →'
+      document.getElementById('elite-price').innerHTML = '$20<span> / mo</span>'
+      document.getElementById('elite-yr').innerHTML    = '<span style="color:var(--gr)">Billed $242/yr — save $106</span>'
+      document.getElementById('elite-btn').textContent = 'Start Elite — $242/yr →'
+    }
+  }
+
+  // Waitlist
+  function handleSignup(e) {
+    e.preventDefault()
+    const email = document.getElementById('cta-email').value
+    const list = JSON.parse(localStorage.getItem('wt-waitlist') || '[]')
+    if (!list.includes(email)) { list.push(email); localStorage.setItem('wt-waitlist', JSON.stringify(list)) }
+    document.getElementById('cta-success').classList.add('show')
+    document.getElementById('cta-email').value = ''
+    console.log('Waitlist signup:', email)
+  }
+</script>
+</body>
+</html>
