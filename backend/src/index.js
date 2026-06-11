@@ -5,11 +5,12 @@ const cors         = require('cors')
 const cookieParser = require('cookie-parser')
 
 // Routes
-const authRoutes   = require('./routes/auth')
-const schwabRoutes = require('./routes/schwab')
-const webullRoutes = require('./routes/webull')
-const csvRoutes    = require('./routes/csv')
-const tradesRoutes = require('./routes/trades')
+const authRoutes     = require('./routes/auth')
+const schwabRoutes   = require('./routes/schwab')
+const webullRoutes   = require('./routes/webull')
+const csvRoutes      = require('./routes/csv')
+const tradesRoutes   = require('./routes/trades')
+const insightsRoutes = require('./routes/insights')
 
 const app  = express()
 const PORT = process.env.PORT || 3001
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 // ── Routes ────────────────────────────────────────────────────
+app.use('/insights',     insightsRoutes)
 app.use('/auth',         authRoutes)
 app.use('/auth/schwab',  schwabRoutes)
 app.use('/auth/webull',  webullRoutes)
